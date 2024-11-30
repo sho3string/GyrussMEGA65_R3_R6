@@ -41,7 +41,7 @@ constant QNICE_FIRMWARE           : string  := QNICE_FIRMWARE_M2M;
 ----------------------------------------------------------------------------------------------------------
 
 -- @TODO: Your core's clock speed
-constant CORE_CLK_SPEED       : natural := 54_000_000;   -- @TODO YOURCORE expects 54 MHz
+constant CORE_CLK_SPEED       : natural := 49_154_930;   -- @TODO YOURCORE expects 54 MHz
 
 -- System clock speed (crystal that is driving the FPGA) and QNICE clock speed
 -- !!! Do not touch !!!
@@ -56,8 +56,8 @@ constant QNICE_CLK_SPEED      : natural := 50_000_000;   -- a change here has de
 --    VGA_*   size of the core's target output post scandoubler
 --    If in doubt, use twice the values found in this link:
 --    https://mister-devel.github.io/MkDocs_MiSTer/advanced/nativeres/#arcade-core-default-native-resolutions
-constant VGA_DX               : natural := 720;
-constant VGA_DY               : natural := 576;
+constant VGA_DX               : natural := 512;
+constant VGA_DY               : natural := 448;
 
 --    FONT_*  size of one OSM character
 constant FONT_FILE            : string  := "../font/Anikki-16x16-m2m.rom";
@@ -151,10 +151,81 @@ constant C_CRTROMS_MAN           : crtrom_buf_array := ( x"EEEE", x"EEEE",
 --               b) Don't forget to zero-terminate each of your substrings of C_CRTROMS_AUTO_NAMES by adding "& ENDSTR;"
 --               c) Don't forget to finish the C_CRTROMS_AUTO array with x"EEEE"
 
+constant C_DEV_GYR_CPU_ROM1          : std_logic_vector(15 downto 0) := x"0100";    -- gyrussk.1 GYRUSS CPU1 ROM 1
+constant C_DEV_GYR_CPU_ROM2          : std_logic_vector(15 downto 0) := x"0101";    -- gyrussk.2 GYRUSS CPU1 ROM 2
+constant C_DEV_GYR_CPU_ROM3          : std_logic_vector(15 downto 0) := x"0102";    -- gyrussk.3 GYRUSS CPU1 ROM 3
+constant C_DEV_GRY_SUB               : std_logic_vector(15 downto 0) := x"0103";    -- gyrussk.9 GYRUSS SUB CPU
+constant C_DEV_GRY_TILES             : std_logic_vector(15 downto 0) := x"0104";    -- gyrussk.4 TILES
+constant C_DEV_GRY_SPR2              : std_logic_vector(15 downto 0) := x"0105";    -- gyrussk.5 SPR 2
+constant C_DEV_GRY_SPR1              : std_logic_vector(15 downto 0) := x"0106";    -- gyrussk.6 SPR 1
+constant C_DEV_GRY_SPR4              : std_logic_vector(15 downto 0) := x"0107";    -- gyrussk.7 SPR 4
+constant C_DEV_GRY_SPR3              : std_logic_vector(15 downto 0) := x"0108";    -- gyrussk.8 SPR 3
+constant C_DEV_GRY_ROM1_AU1          : std_logic_vector(15 downto 0) := x"0109";    -- gyrussk.1a AUDIO1 CPU 2
+constant C_DEV_GRY_ROM2_AU1          : std_logic_vector(15 downto 0) := x"010A";    -- gyrussk.2a AUDIO1 CPU 2
+constant C_DEV_GRY_ROM1_AU2          : std_logic_vector(15 downto 0) := x"010B";    -- gyrussk.3a AUDIO2 CPU 3 - 8039
+constant C_DEV_GRY_TLT               : std_logic_vector(15 downto 0) := x"010C";    -- gyrussk.pr2 TILE LOOKUP TABLE
+constant C_DEV_GRY_SLT               : std_logic_vector(15 downto 0) := x"010D";    -- gyrussk.pr1 SPRITE LOOKUP TABLE
+constant C_DEV_GRY_PAL               : std_logic_vector(15 downto 0) := x"010E";    -- gyrussk.pr3 PALETTE
+
+-- Gyruss core specific ROMs
+constant ROM1_MAIN_CPU1              : string  := "arcade/gyruss/gyrussk.1"   & ENDSTR;  -- z80 cpu 1
+constant ROM2_MAIN_CPU1              : string  := "arcade/gyruss/gyrussk.2"   & ENDSTR;  -- z80 cpu 1
+constant ROM3_MAIN_CPU1              : string  := "arcade/gyruss/gyrussk.3"   & ENDSTR;  -- z80 cpu 1
+constant ROM1_SUB_CPU                : string  := "arcade/gyruss/gyrussk.9"   & ENDSTR;  -- z80 sub cpu
+constant ROM1_TILES                  : string  := "arcade/gyruss/gyrussk.4"   & ENDSTR;  -- tiles
+constant ROM2_SPRITES                : string  := "arcade/gyruss/gyrussk.5"   & ENDSTR;  -- sprites
+constant ROM1_SPRITES                : string  := "arcade/gyruss/gyrussk.6"   & ENDSTR;  -- sprites
+constant ROM4_SPRITES                : string  := "arcade/gyruss/gyrussk.7"   & ENDSTR;  -- sprites
+constant ROM3_SPRITES                : string  := "arcade/gyruss/gyrussk.8"   & ENDSTR;  -- sprites
+constant ROM1_AUDIO1                 : string  := "arcade/gyruss/gyrussk.1a"  & ENDSTR;  -- audio cpu
+constant ROM2_AUDIO1                 : string  := "arcade/gyruss/gyrussk.2a"  & ENDSTR;  -- audio cpu
+constant ROM1_AUDIO2                 : string  := "arcade/gyruss/gyrussk.3a"  & ENDSTR;  -- audio 2
+constant PROM_SPRITES                : string  := "arcade/gyruss/gyrussk.pr1" & ENDSTR;  -- sprite lookup table
+constant PROM_TILES                  : string  := "arcade/gyruss/gyrussk.pr2" & ENDSTR;  -- tile lookup table
+constant PROM_PALETTE                : string  := "arcade/gyruss/gyrussk2.pr3" & ENDSTR;  -- palette prom
+
+constant CPU_ROM1_MAIN_START      : std_logic_vector(15 downto 0) := X"0000";
+constant CPU_ROM2_MAIN_START      : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(to_integer(unsigned(CPU_ROM1_MAIN_START)) + ROM1_MAIN_CPU1'length, 16));
+constant CPU_ROM3_MAIN_START      : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(to_integer(unsigned(CPU_ROM2_MAIN_START)) + ROM2_MAIN_CPU1'length, 16));
+constant SUB_MAIN_START           : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(to_integer(unsigned(CPU_ROM3_MAIN_START)) + ROM3_MAIN_CPU1'length, 16));
+constant TILES_START              : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(to_integer(unsigned(SUB_MAIN_START))      + ROM1_SUB_CPU'length, 16));
+constant SPRITES2_START           : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(to_integer(unsigned(TILES_START))         + ROM1_TILES'length, 16));
+constant SPRITES1_START           : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(to_integer(unsigned(SPRITES2_START))      + ROM2_SPRITES'length, 16));
+constant SPRITES4_START           : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(to_integer(unsigned(SPRITES1_START))      + ROM1_SPRITES'length, 16));
+constant SPRITES3_START           : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(to_integer(unsigned(SPRITES4_START))      + ROM4_SPRITES'length, 16));
+constant ROM1_AUDIO1_START        : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(to_integer(unsigned(SPRITES3_START))      + ROM3_SPRITES'length, 16));
+constant ROM2_AUDIO1_START        : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(to_integer(unsigned(ROM1_AUDIO1_START))   + ROM1_AUDIO1'length, 16));
+constant AUDIO2_START             : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(to_integer(unsigned(ROM2_AUDIO1_START))   + ROM2_AUDIO1'length, 16));
+constant SPR_PROM_START           : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(to_integer(unsigned(AUDIO2_START))        + ROM1_AUDIO2 'length, 16));
+constant TIL_PROM_START           : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(to_integer(unsigned(SPR_PROM_START))      + PROM_SPRITES'length, 16));
+constant PAL_PROM_START           : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(to_integer(unsigned(TIL_PROM_START))      + PROM_TILES'length, 16));
+
 -- M2M framework constants
-constant C_CRTROMS_AUTO_NUM      : natural := 0;                                       -- Amount of automatically loadable ROMs and carts, maximum is 16
-constant C_CRTROMS_AUTO_NAMES    : string  := "" & ENDSTR;
-constant C_CRTROMS_AUTO          : crtrom_buf_array := ( x"EEEE", x"EEEE", x"EEEE", x"EEEE",
+constant C_CRTROMS_AUTO_NUM      : natural := 15; -- Amount of automatically loadable ROMs and carts, if more tha    n 3: also adjust CRTROM_MAN_MAX in M2M/rom/shell_vars.asm, Needs to be in sync with config.vhd. Maximum is 16
+constant C_CRTROMS_AUTO_NAMES    : string  := ROM1_MAIN_CPU1 & ROM2_MAIN_CPU1 & ROM3_MAIN_CPU1 & 
+                                              ROM1_SUB_CPU &
+                                              ROM1_TILES &
+                                              ROM2_SPRITES & ROM1_SPRITES & ROM4_SPRITES & ROM3_SPRITES &
+                                              ROM1_AUDIO1 & ROM2_AUDIO1 & ROM1_AUDIO2 &
+                                              PROM_SPRITES & PROM_TILES & PROM_PALETTE &  
+                                              ENDSTR;
+
+constant C_CRTROMS_AUTO          : crtrom_buf_array := ( 
+      C_CRTROMTYPE_DEVICE, C_DEV_GYR_CPU_ROM1, C_CRTROMTYPE_MANDATORY, CPU_ROM1_MAIN_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_GYR_CPU_ROM2, C_CRTROMTYPE_MANDATORY, CPU_ROM2_MAIN_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_GYR_CPU_ROM3, C_CRTROMTYPE_MANDATORY, CPU_ROM3_MAIN_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_GRY_SUB,      C_CRTROMTYPE_MANDATORY, SUB_MAIN_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_GRY_TILES,    C_CRTROMTYPE_MANDATORY, TILES_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_GRY_SPR2,     C_CRTROMTYPE_MANDATORY, SPRITES2_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_GRY_SPR1,     C_CRTROMTYPE_MANDATORY, SPRITES1_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_GRY_SPR4,     C_CRTROMTYPE_MANDATORY, SPRITES4_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_GRY_SPR3,     C_CRTROMTYPE_MANDATORY, SPRITES3_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_GRY_ROM1_AU1, C_CRTROMTYPE_MANDATORY, ROM1_AUDIO1_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_GRY_ROM2_AU1, C_CRTROMTYPE_MANDATORY, ROM2_AUDIO1_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_GRY_ROM1_AU2, C_CRTROMTYPE_MANDATORY, AUDIO2_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_GRY_SLT,      C_CRTROMTYPE_MANDATORY, SPR_PROM_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_GRY_TLT,      C_CRTROMTYPE_MANDATORY, TIL_PROM_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_GRY_PAL,      C_CRTROMTYPE_MANDATORY, PAL_PROM_START,
                                                          x"EEEE");                     -- Always finish the array using x"EEEE"
 
 ----------------------------------------------------------------------------------------------------------
