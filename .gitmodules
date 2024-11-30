@@ -1,3 +1,6 @@
 [submodule "QNICE"]
 	path = M2M/QNICE
 	url = https://github.com/sy2002/QNICE-FPGA
+[submodule "CORE/MiSTer-Arcade-Gyruss"]
+	path = CORE/MiSTer-Arcade-Gyruss
+	url = https://github.com/sho3string/MiSTer-Arcade-Gyruss
