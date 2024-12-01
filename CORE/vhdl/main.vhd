@@ -142,21 +142,23 @@ signal sw : std_logic_vector(23 downto 0);
 signal m_start2  : std_logic := keyboard_n(m65_2);
 signal m_start1  : std_logic := keyboard_n(m65_1);
 signal m_coin    : std_logic := keyboard_n(m65_5);
-signal m_trig11  : std_logic := joy_1_fire_n_i or keyboard_n(m65_a);
-signal m_down1   : std_logic := joy_1_down_n_i or keyboard_n(m65_vert_crsr);
-signal m_up1     : std_logic := joy_1_up_n_i or keyboard_n(m65_up_crsr);
-signal m_right1  : std_logic := joy_1_right_n_i or keyboard_n(m65_horz_crsr);
-signal m_left1   : std_logic := joy_1_left_n_i or keyboard_n(m65_left_crsr);
-signal m_trig21  : std_logic := joy_2_fire_n_i or keyboard_n(m65_a);
-signal m_down2   : std_logic := joy_2_down_n_i or keyboard_n(m65_vert_crsr);
-signal m_up2     : std_logic := joy_2_up_n_i or keyboard_n(m65_up_crsr);
-signal m_right2  : std_logic := joy_2_right_n_i or keyboard_n(m65_horz_crsr);
-signal m_left2   : std_logic := joy_2_left_n_i or keyboard_n(m65_left_crsr);
+signal m_trig11  : std_logic := joy_1_fire_n_i and keyboard_n(m65_a);
+signal m_down1   : std_logic := joy_1_down_n_i and keyboard_n(m65_vert_crsr);
+signal m_up1     : std_logic := joy_1_up_n_i and keyboard_n(m65_up_crsr);
+signal m_right1  : std_logic := joy_1_right_n_i and keyboard_n(m65_horz_crsr);
+signal m_left1   : std_logic := joy_1_left_n_i and keyboard_n(m65_left_crsr);
+signal m_trig21  : std_logic := joy_2_fire_n_i and keyboard_n(m65_a);
+signal m_down2   : std_logic := joy_2_down_n_i and keyboard_n(m65_vert_crsr);
+signal m_up2     : std_logic := joy_2_up_n_i and keyboard_n(m65_up_crsr);
+signal m_right2  : std_logic := joy_2_right_n_i and keyboard_n(m65_horz_crsr);
+signal m_left2   : std_logic := joy_2_left_n_i and keyboard_n(m65_left_crsr);
 
-signal INP0 : std_logic_vector(7 downto 0) := "000" & m_start2 & m_start1 & "00" & m_coin;
-signal INP1 : std_logic_vector(7 downto 0) := "000" & m_trig11 & m_down1 & m_up1 & m_right1 & m_left1;
-signal INP2 : std_logic_vector(7 downto 0) := "000" & m_trig21 & m_down2 & m_up2 & m_right2 & m_left2;
+signal INP0 : std_logic_vector(7 downto 0) := "111" & m_start2 & m_start1 & "11" & m_coin;
+signal INP1 : std_logic_vector(7 downto 0) := "111" & m_trig11 & m_down1 & m_up1 & m_right1 & m_left1;
+signal INP2 : std_logic_vector(7 downto 0) := "111" & m_trig21 & m_down2 & m_up2 & m_right2 & m_left2;
 
+signal audio_left_unsigned  : std_logic_vector(15 downto 0);
+signal audio_right_unsigned : std_logic_vector(15 downto 0);
 
 begin
     
@@ -164,12 +166,18 @@ begin
     options(1) <= osm_control_i(C_MENU_OSMDIM);
     flip_screen <= osm_control_i(C_MENU_FLIP);
     
+    audio_left_o(15) <= not audio_left_unsigned(15);
+    audio_left_o(14 downto 0) <= signed(audio_left_unsigned(14 downto 0));
+    
+    audio_right_o(15) <= not audio_right_unsigned(15);
+    audio_right_o(14 downto 0) <= signed(audio_right_unsigned(14 downto 0));
+    
      -- video
     PCLK_EN     <=  video_ce_o;
     oRGB        <=  video_blue_o & video_green_o & video_red_o;
 
     -- Generate the Z80 clock - 49.154930 / 2x 7 = 3.510 Mhz
-    process (clk_main_i)
+    /*process (clk_main_i)
     begin
     if rising_edge(clk_main_i) then
       if counter < DIVISOR then
@@ -180,7 +188,14 @@ begin
       end if;
     end if;
     end process;
-    sndclk <= temp_clk;
+    sndclk <= temp_clk;*/
+    i_sndclk : entity work.sclkgen 
+        port map ( 
+            clk_in  => clk_main_i, --49.154930
+            clk_out => sndclk      --
+    );
+    
+
 
     process(clk_main_i) 
     begin 
@@ -225,8 +240,8 @@ begin
 	    PV      => VPOS,
 	    PCLK    => PCLK_EN,
 	    POUT    => POUT,
-	    SND_L   => audio_left_o,
-	    SND_R   => audio_right_o,
+	    SND_L   => audio_left_unsigned,
+	    SND_R   => audio_right_unsigned,
 	    ROMCL   => dn_clk_i,
 	    ROMAD   => dn_addr_i(16 downto 0),
 	    ROMDT   => dn_data_i,
