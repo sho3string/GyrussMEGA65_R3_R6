@@ -182,7 +182,7 @@ constant ROM2_AUDIO1                 : string  := "arcade/gyruss/gyrussk.2a"  & 
 constant ROM1_AUDIO2                 : string  := "arcade/gyruss/gyrussk.3a"  & ENDSTR;  -- audio 2
 constant PROM_SPRITES                : string  := "arcade/gyruss/gyrussk.pr1" & ENDSTR;  -- sprite lookup table
 constant PROM_TILES                  : string  := "arcade/gyruss/gyrussk.pr2" & ENDSTR;  -- tile lookup table
-constant PROM_PALETTE                : string  := "arcade/gyruss/gyrussk2.pr3" & ENDSTR;  -- palette prom
+constant PROM_PALETTE                : string  := "arcade/gyruss/gyrussk2.pr3" & ENDSTR; -- palette prom
 
 constant CPU_ROM1_MAIN_START      : std_logic_vector(15 downto 0) := X"0000";
 constant CPU_ROM2_MAIN_START      : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(to_integer(unsigned(CPU_ROM1_MAIN_START)) + ROM1_MAIN_CPU1'length, 16));
@@ -205,7 +205,7 @@ constant C_CRTROMS_AUTO_NUM      : natural := 15; -- Amount of automatically loa
 constant C_CRTROMS_AUTO_NAMES    : string  := ROM1_MAIN_CPU1 & ROM2_MAIN_CPU1 & ROM3_MAIN_CPU1 & 
                                               ROM1_SUB_CPU &
                                               ROM1_TILES &
-                                              ROM2_SPRITES & ROM1_SPRITES & ROM4_SPRITES & ROM3_SPRITES &
+                                              ROM1_SPRITES & ROM2_SPRITES & ROM3_SPRITES & ROM4_SPRITES &
                                               ROM1_AUDIO1 & ROM2_AUDIO1 & ROM1_AUDIO2 &
                                               PROM_SPRITES & PROM_TILES & PROM_PALETTE &  
                                               ENDSTR;
@@ -216,10 +216,10 @@ constant C_CRTROMS_AUTO          : crtrom_buf_array := (
       C_CRTROMTYPE_DEVICE, C_DEV_GYR_CPU_ROM3, C_CRTROMTYPE_MANDATORY, CPU_ROM3_MAIN_START,
       C_CRTROMTYPE_DEVICE, C_DEV_GRY_SUB,      C_CRTROMTYPE_MANDATORY, SUB_MAIN_START,
       C_CRTROMTYPE_DEVICE, C_DEV_GRY_TILES,    C_CRTROMTYPE_MANDATORY, TILES_START,
-      C_CRTROMTYPE_DEVICE, C_DEV_GRY_SPR2,     C_CRTROMTYPE_MANDATORY, SPRITES2_START,
       C_CRTROMTYPE_DEVICE, C_DEV_GRY_SPR1,     C_CRTROMTYPE_MANDATORY, SPRITES1_START,
-      C_CRTROMTYPE_DEVICE, C_DEV_GRY_SPR4,     C_CRTROMTYPE_MANDATORY, SPRITES4_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_GRY_SPR2,     C_CRTROMTYPE_MANDATORY, SPRITES2_START,
       C_CRTROMTYPE_DEVICE, C_DEV_GRY_SPR3,     C_CRTROMTYPE_MANDATORY, SPRITES3_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_GRY_SPR4,     C_CRTROMTYPE_MANDATORY, SPRITES4_START,
       C_CRTROMTYPE_DEVICE, C_DEV_GRY_ROM1_AU1, C_CRTROMTYPE_MANDATORY, ROM1_AUDIO1_START,
       C_CRTROMTYPE_DEVICE, C_DEV_GRY_ROM2_AU1, C_CRTROMTYPE_MANDATORY, ROM2_AUDIO1_START,
       C_CRTROMTYPE_DEVICE, C_DEV_GRY_ROM1_AU2, C_CRTROMTYPE_MANDATORY, AUDIO2_START,
