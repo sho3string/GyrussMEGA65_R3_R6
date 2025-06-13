@@ -259,35 +259,36 @@ constant C_MENU_VGA_15KHZCS   : natural := 25;
 
 -- Midway DIPs
 -- Dipswitch A
-constant C_MENU_DSWA_0        : natural := 52; -- Coin A
-constant C_MENU_DSWA_1        : natural := 53; -- Coin A
-constant C_MENU_DSWA_2        : natural := 54; -- Coin A
-constant C_MENU_DSWA_3        : natural := 55; -- Coin A
-constant C_MENU_DSWA_4        : natural := 56; -- Coin B
-constant C_MENU_DSWA_5        : natural := 57; -- Coin B
-constant C_MENU_DSWA_6        : natural := 58; -- Coin B
-constant C_MENU_DSWA_7        : natural := 59; -- Coin B
+constant C_MENU_DSWA_0        : natural := 50; -- Coin A
+constant C_MENU_DSWA_1        : natural := 51; -- Coin A
+constant C_MENU_DSWA_2        : natural := 52; -- Coin A
+constant C_MENU_DSWA_3        : natural := 53; -- Coin A
+constant C_MENU_DSWA_4        : natural := 54; -- Coin B
+constant C_MENU_DSWA_5        : natural := 55; -- Coin B
+constant C_MENU_DSWA_6        : natural := 56; -- Coin B
+constant C_MENU_DSWA_7        : natural := 57; -- Coin B
 
 -- Dipswitch B
-constant C_MENU_DSWB_0        : natural := 60; -- Lives A
-constant C_MENU_DSWB_1        : natural := 61; -- Lives B
-constant C_MENU_DSWB_2        : natural := 62; -- Cabinet
-constant C_MENU_DSWB_3        : natural := 63; -- Bonus Life
-constant C_MENU_DSWB_4        : natural := 64; -- Difficulty A
-constant C_MENU_DSWB_5        : natural := 65; -- Difficulty B
-constant C_MENU_DSWB_6        : natural := 66; -- Difficulty C
-constant C_MENU_DSWB_7        : natural := 67; -- Demo Sounds
+constant C_MENU_DSWB_0        : natural := 58; -- Lives A
+constant C_MENU_DSWB_1        : natural := 59; -- Lives B
+constant C_MENU_DSWB_2        : natural := 60; -- Cabinet
+constant C_MENU_DSWB_3        : natural := 61; -- Bonus Life
+constant C_MENU_DSWB_4        : natural := 62; -- Difficulty A
+constant C_MENU_DSWB_5        : natural := 63; -- Difficulty B
+constant C_MENU_DSWB_6        : natural := 64; -- Difficulty C
+constant C_MENU_DSWB_7        : natural := 65; -- Demo Sounds
 
 -- Dipswitch C
-constant C_MENU_DSWC_0        : natural := 68; -- Demo Music
-constant C_MENU_DSWC_1        : natural := 69; -- not used
-constant C_MENU_DSWC_2        : natural := 70; -- not used
-constant C_MENU_DSWC_3        : natural := 71; -- not used
-constant C_MENU_DSWC_4        : natural := 72; -- not used
-constant C_MENU_DSWC_5        : natural := 73; -- not used
-constant C_MENU_DSWC_6        : natural := 74; -- not used
-constant C_MENU_DSWC_7        : natural := 75; -- not used
+constant C_MENU_DSWC_0        : natural := 66; -- Demo Music
+--constant C_MENU_DSWC_1        : natural := 67; -- not used
+--constant C_MENU_DSWC_2        : natural := 68; -- not used
+--constant C_MENU_DSWC_3        : natural := 69; -- not used
+--constant C_MENU_DSWC_4        : natural := 70; -- not used
+--constant C_MENU_DSWC_5        : natural := 71; -- not used
+--constant C_MENU_DSWC_6        : natural := 72; -- not used
+--constant C_MENU_DSWC_7        : natural := 73; -- not used
 
+constant C_MENU_IMPROVE_AUDIO  : natural := 70;
 
 signal div          : std_logic_vector(2 downto 0);
 signal dsw_a_i      : std_logic_vector(7 downto 0);
@@ -403,14 +404,15 @@ begin
               main_osm_control_i(C_MENU_DSWB_1) &
               main_osm_control_i(C_MENU_DSWB_0);
               
-   dsw_c_i <= main_osm_control_i(C_MENU_DSWC_7) &
+   dsw_c_i <= "0000000" & main_osm_control_i(C_MENU_DSWC_0);
+              /*main_osm_control_i(C_MENU_DSWC_7) &
               main_osm_control_i(C_MENU_DSWC_6) &
               main_osm_control_i(C_MENU_DSWC_5) &
               main_osm_control_i(C_MENU_DSWC_4) &
               main_osm_control_i(C_MENU_DSWC_3) &
               main_osm_control_i(C_MENU_DSWC_2) &
               main_osm_control_i(C_MENU_DSWC_1) &
-              main_osm_control_i(C_MENU_DSWC_0);
+              main_osm_control_i(C_MENU_DSWC_0);*/
   
   
    ---------------------------------------------------------------------------------------------
@@ -610,8 +612,7 @@ begin
    -- Video and audio mode control
    qnice_dvi_o                <= '0';                                         -- 0=HDMI (with sound), 1=DVI (no sound)
    qnice_audio_mute_o         <= '0';                                         -- audio is not muted
-   qnice_audio_filter_o       <= '1';
-   --qnice_audio_filter_o       <= qnice_osm_control_i(C_MENU_IMPROVE_AUDIO);   -- 0 = raw audio, 1 = use filters from globals.vhd
+   qnice_audio_filter_o       <= qnice_osm_control_i(C_MENU_IMPROVE_AUDIO);   -- 0 = raw audio, 1 = use filters from globals.vhd
    --qnice_zoom_crop_o          <= qnice_osm_control_i(C_MENU_HDMI_ZOOM);       -- 0 = no zoom/crop
    
    -- These two signals are often used as a pair (i.e. both '1'), particularly when

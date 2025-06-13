@@ -114,14 +114,14 @@ constant m65_vert_crsr   : integer := 7;  -- means cursor down in C64 terminolog
 
 constant C_MENU_FLIP     : natural := 9;
 
-constant C_MENU_GYRUSS_H1  : integer := 32;
-constant C_MENU_GYRUSS_H2  : integer := 33;
-constant C_MENU_GYRUSS_H4  : integer := 34;
-constant C_MENU_GYRUSS_H8  : integer := 35;
-constant C_MENU_GYRUSS_H16 : integer := 36;
-constant C_MENU_GYRUSS_V1  : integer := 42;
-constant C_MENU_GYRUSS_V2  : integer := 43;
-constant C_MENU_GYRUSS_V4  : integer := 44;
+constant C_MENU_GYRUSS_H1  : integer := 31;
+constant C_MENU_GYRUSS_H2  : integer := 32;
+constant C_MENU_GYRUSS_H4  : integer := 33;
+constant C_MENU_GYRUSS_H8  : integer := 34;
+constant C_MENU_GYRUSS_H16 : integer := 35;
+constant C_MENU_GYRUSS_V1  : integer := 41;
+constant C_MENU_GYRUSS_V2  : integer := 42;
+constant C_MENU_GYRUSS_V4  : integer := 43;
 
 constant m65_help        : integer := 67; --Help key
 
@@ -159,10 +159,13 @@ begin
     flip <= osm_control_i(C_MENU_FLIP);
     
     -- convert unsigned audio to signed
-    audio_left_o(15) <= not audio_left_unsigned(15);
-    audio_left_o(14 downto 0) <= signed(audio_left_unsigned(14 downto 0));
-    audio_right_o(15) <= not audio_right_unsigned(15);
-    audio_right_o(14 downto 0) <= signed(audio_right_unsigned(14 downto 0));
+    --audio_left_o(15) <= not audio_left_unsigned(15);
+    --audio_left_o(14 downto 0) <= signed(audio_left_unsigned(14 downto 0));
+    --audio_right_o(15) <= not audio_right_unsigned(15);
+    --audio_right_o(14 downto 0) <= signed(audio_right_unsigned(14 downto 0));
+    
+    audio_left_o  <= signed(unsigned(audio_left_unsigned)  - 32768);
+    audio_right_o <= signed(unsigned(audio_right_unsigned) - 32768);
 
     i_sndclk : entity work.sclkgen 
         port map ( 
