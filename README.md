@@ -23,12 +23,13 @@ Run the script: a) First extract all the files within the zip to any working fol
 b) Copy the powershell or shell script to the same folder and execute it to create the following files.
 
 **Ensure the following files are present and sizes are correct**  
+![image](https://github.com/user-attachments/assets/e393b384-a31b-45ad-a356-166fec35892c)
 
 
 For Windows run the script via PowerShell - Gyruss_rom_installer.ps1  
 Simply select the script and with the right mouse button select the Run with Powershell.
 
 For Linux/Unix/MacOS execute ./mpatrol_rom_installer.sh  
-The script will automatically create the /arcade/Gyruss folder where the generated ROMs will reside.  
+The script will automatically create the /arcade/gyruss folder where the generated ROMs will reside.  
 
 Copy or move "arcade/gyruss" to your MEGA65 SD card: You may either use the bottom SD card tray of the MEGA65 or the tray at the backside of the computer (the latter has precedence over the first).  
